@@ -1,0 +1,10 @@
+name = "verification101"
+version = "0.1.0"
+defaultTargets = ["max", "Lib"]
+
+[[lean_lib]]
+name = "Lib"
+
+[[lean_exe]]
+name = "max"
+root = "Max"
