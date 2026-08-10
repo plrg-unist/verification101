@@ -1,23 +1,24 @@
-def maxOfInts (i : Int) (j : Int) : Int :=
-  if i >= j then i else j
+def maxOfInts (i j : Int) : Int :=
+  if j ≤ i then i else j
 
 def main : IO Unit := do
-  let stdin <- IO.getStdin
-  let line₁ <- stdin.getLine
-  let line₂ <- stdin.getLine
+  let stdin ← IO.getStdin
+  let line₁ ← stdin.getLine
+  let line₂ ← stdin.getLine
   if let some i := line₁.trimAscii.toInt? then
-  if let some j := line₂.trimAscii.toInt? then
-  let k := maxOfInts i j
-  IO.println s!"Max of {i} and {j} is {k}"
+    if let some j := line₂.trimAscii.toInt? then
+      let k := maxOfInts i j
+      IO.println s!"Max of {i} and {j} is {k}"
 
-theorem max_ge_first : ∀ {i j : Int}, maxOfInts i j >= i := by
+theorem le_maxOfInts_left {i j : Int} : i ≤ maxOfInts i j := by
   unfold maxOfInts
   omega
 
-theorem max_ge_second : ∀ {i j : Int}, maxOfInts i j >= j := by
+theorem le_maxOfInts_right {i j : Int} : j ≤ maxOfInts i j := by
   unfold maxOfInts
   omega
 
-theorem max_is_first_or_second : ∀ {i j : Int}, maxOfInts i j = i ∨ maxOfInts i j = j := by
+theorem maxOfInts_eq_left_or_eq_right {i j : Int} :
+    maxOfInts i j = i ∨ maxOfInts i j = j := by
   unfold maxOfInts
   omega

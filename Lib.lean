@@ -1,5 +1,5 @@
 /-! Eval -/
--- use "#eval" to evaluate a term
+-- use `#eval` to evaluate a term
 
 #eval 1 + 2
 #eval -1 + 2
@@ -9,7 +9,7 @@
 #eval "Hello, world!"
 
 /-! Check -/
--- use "#check" to type-check a term
+-- use `#check` to type-check a term
 
 #check 1 + 2
 #check -1 + 2
@@ -19,7 +19,7 @@
 #check "Hello, world!"
 
 /-! Functions -/
--- Functions are introduced using "def"
+-- Functions are introduced using `def`
 
 /-- Doubles a natural number -/
 def double (n : Nat) : Nat := n + n
@@ -43,7 +43,6 @@ def add (n : Nat) (m : Nat) : Nat := n + m
 
 /-- Adds 1 to a natural number -/
 def add1 : Nat → Nat := add 1
--- def add1 : Nat -> Nat := add 1
 
 #eval add1 2
 
@@ -58,11 +57,10 @@ def one : Nat := 1
 #eval one
 
 /-! Anonymous Functions -/
--- Anonymous functions are introduced using "fun"
+-- Anonymous functions are introduced using `fun`
 
 /-- Adds two natural numbers -/
 def add'' : Nat → Nat → Nat := fun n ↦ fun m ↦ n + m
--- def add'' : Nat -> Nat -> Nat := fun n => fun m => n + m
 
 #eval add'' 1 2
 
@@ -72,7 +70,7 @@ def add'' : Nat → Nat → Nat := fun n ↦ fun m ↦ n + m
 def add''' : Nat → Nat → Nat := fun n m ↦ n + m
 
 /-- Applies a function twice -/
-def twice (f : Nat → Nat) (n : Nat) := f (f n)
+def twice (f : Nat → Nat) (n : Nat) : Nat := f (f n)
 
 #check @twice
 #eval twice double 2
@@ -98,9 +96,9 @@ def quadruple (n : Nat) : Nat :=
 #eval quadruple 2
 
 /-! Inductive Types -/
--- Inductive types are introduced using "inductive" and eliminated using "match"
+-- Inductive types are introduced using `inductive` and eliminated using `match`
 
-/-- A day of week -/
+/-- A day of the week -/
 inductive Day : Type where
   | monday : Day
   | tuesday : Day
@@ -118,8 +116,8 @@ enum Day { monday, tuesday, wednesday, thursday, friday, saturday, sunday };
 #eval Day.monday
 #check Day.monday
 
--- ": Type" and ": <type>" can be usually omitted
-/-- A day of week -/
+-- `: Type` and `: <type>` can usually be omitted
+/-- A day of the week -/
 inductive Day' where
   | monday
   | tuesday
@@ -129,7 +127,7 @@ inductive Day' where
   | saturday
   | sunday
 
-/-- The next day of a day -/
+/-- The day after a given day -/
 def nextDay (d : Day) : Day :=
   match d with
   | Day.monday => Day.tuesday
@@ -144,7 +142,7 @@ def nextDay (d : Day) : Day :=
 #eval nextDay Day.monday
 
 -- The type name can be omitted if it is clear from the context
-/-- The next day of a day -/
+/-- The day after a given day -/
 def nextDay' (d : Day) : Day :=
   match d with
   | .monday => .tuesday
@@ -193,11 +191,11 @@ def area' (s : Shape) : Nat :=
 -- A variant can be defined without giving a name to its parameter
 /-- A shape that is either a rectangle or a circle -/
 inductive Shape' where
-  | rectangle : Nat -> Nat -> Shape'
-  | circle : Nat -> Shape'
+  | rectangle : Nat → Nat → Shape'
+  | circle : Nat → Shape'
 
 -- A type may have only a single variant
-/-- A point in a 2-dimensional plain -/
+/-- A point in a 2-dimensional plane -/
 inductive Point where
   | intro (x y : Nat)
 
@@ -207,17 +205,16 @@ def midpoint (p₁ p₂ : Point) : Point :=
   | .intro x₁ y₁, .intro x₂ y₂ => .intro ((x₁ + x₂) / 2) ((y₁ + y₂) / 2)
 
 #eval midpoint (.intro 2 3) (.intro 4 7)
+#eval midpoint ⟨2, 3⟩ ⟨4, 7⟩
 
 /-- A mid-point between two points -/
 def midpoint' (p₁ p₂ : Point) : Point :=
-  let ⟨ x₁, y₁ ⟩ := p₁
-  let ⟨ x₂, y₂ ⟩ := p₂
-  ⟨ (x₁ + x₂) / 2, (y₁ + y₂) / 2 ⟩
-
-#eval midpoint' ⟨ 2, 3 ⟩ ⟨ 4, 7 ⟩
+  let ⟨x₁, y₁⟩ := p₁
+  let ⟨x₂, y₂⟩ := p₂
+  ⟨(x₁ + x₂) / 2, (y₁ + y₂) / 2⟩
 
 -- A structure is a single-variant inductive type with some syntactic sugar
-/-- A point in a 2-dimensional plain -/
+/-- A point in a 2-dimensional plane -/
 structure Point' where
   x : Nat
   y : Nat
@@ -242,17 +239,15 @@ inductive MyNat where
 #check MyNat.succ (.succ (.zero)) -- 2
 #check MyNat.succ (.succ (.succ (.zero))) -- 3
 
-/-- Adds two natural number -/
+/-- Adds two natural numbers -/
 def myAdd (n m : MyNat) : MyNat :=
   match m with
   | .zero => n
   | .succ m' => .succ (myAdd n m')
 
-#check Nat.add
-
 #eval myAdd (.succ .zero) (.succ (.succ .zero)) -- 1 + 2
 
--- "Nat" is defined in the same way
+-- `Nat` is defined in the same way
 /-
 inductive Nat where
   | zero : Nat
@@ -273,7 +268,7 @@ def sumFromZero (n : Nat) : Nat :=
 def sumFromZero' (n : Nat) : Nat :=
   match n with
   | 0 => 0
-  | n' + 1 => n + sumFromZero n'
+  | n' + 1 => n + sumFromZero' n'
 
 #eval sumFromZero' 10
 
@@ -282,7 +277,7 @@ inductive NatList where
   /-- The empty list -/
   | nil
   /-- A pair of a natural number and a list -/
-  | cons (h : Nat) (t : NatList)
+  | cons (head : Nat) (tail : NatList)
 
 #eval NatList.nil -- []
 #eval NatList.cons 0 .nil -- [0]
@@ -292,19 +287,19 @@ inductive NatList where
 def sumOfNats (ns : NatList) : Nat :=
   match ns with
   | .nil => 0
-  | .cons h t => h + sumOfNats t
+  | .cons head tail => head + sumOfNats tail
 
 #eval sumOfNats (.cons 1 (.cons 2 (.cons 3 .nil)))
 
 /-! Polymorphism -/
--- Parametric polymorphism, a.k.a, generics
+-- Parametric polymorphism, a.k.a. generics
 
 /-- A list of elements of type α -/
 inductive MyList (α : Type) where
   /-- The empty list -/
   | nil
   /-- A pair of an element and a list -/
-  | cons (h : α) (t : MyList α)
+  | cons (head : α) (tail : MyList α)
 
 #check MyList.cons 0 (.cons 1 .nil) -- [0, 1]
 #check MyList.cons false (.cons true .nil) -- [false, true]
@@ -313,7 +308,7 @@ inductive MyList (α : Type) where
 def myAppend (α : Type) (xs ys : MyList α) : MyList α :=
   match xs with
   | .nil => ys
-  | .cons h t => .cons h (myAppend α t ys)
+  | .cons head tail => .cons head (myAppend α tail ys)
 
 #check @myAppend
 #eval myAppend Nat (.cons 0 .nil) (.cons 1 .nil)
@@ -324,15 +319,13 @@ def myAppend (α : Type) (xs ys : MyList α) : MyList α :=
 def myAppend' {α : Type} (xs ys : MyList α) : MyList α :=
   match xs with
   | .nil => ys
-  | .cons h t => .cons h (myAppend' t ys)
+  | .cons head tail => .cons head (myAppend' tail ys)
 
 #check @myAppend'
 #eval myAppend' (.cons 0 .nil) (.cons 1 .nil)
 #eval myAppend' (.cons false .nil) (.cons true .nil)
 
-#check List
-
--- "List" is defined in the same way
+-- `List` is defined in the same way
 /-
 inductive List (α : Type u) where
   | nil : List α
@@ -346,19 +339,19 @@ inductive List (α : Type u) where
 def append {α : Type} (xs ys : List α) : List α :=
   match xs with
   | .nil => ys
-  | .cons h t => .cons h (append t ys)
+  | .cons head tail => .cons head (append tail ys)
 
 /-- Appends a list to another list -/
 def append' {α : Type} (xs ys : List α) : List α :=
   match xs with
   | [] => ys
-  | h :: t => .cons h (append t ys)
+  | head :: tail => .cons head (append' tail ys)
 
 /-! Generalized Algebraic Data Types (GADTs) -/
--- Polymorphic types may have variants that can be only instantiated with specific types
+-- Polymorphic types may have variants that can only be instantiated with specific types
 
 /-- An expression of Expr α evaluates to a value of α -/
-inductive Expr : Type -> Type where
+inductive Expr : Type → Type where
   | num (n : Nat) : Expr Nat
   | add (l r : Expr Nat) : Expr Nat
   | lt (l r : Expr Nat) : Expr Bool
@@ -383,7 +376,7 @@ def evalExpr {α : Type} (e : Expr α) : α :=
 /-! Dependent Types -/
 -- Abstracting a type with a term
 
-#check fun n => n + 1
+#check fun n ↦ n + 1
 #check @myAppend
 #check @MyList
 
@@ -394,14 +387,12 @@ Term | Function | Polymorphic function
 Type | ???      | Polymorphic type
 -/
 
-#check @Vector
-
 /-- MyVector α n is a vector of n elements of type α -/
-inductive MyVector (α : Type) : Nat -> Type where
+inductive MyVector (α : Type) : Nat → Type where
   /-- The empty vector -/
   | nil : MyVector α 0
   /-- A pair of an element and a vector -/
-  | cons {n : Nat} (h : α) (t : MyVector α n) : MyVector α (n + 1)
+  | cons {n : Nat} (head : α) (tail : MyVector α n) : MyVector α (n + 1)
 
 #check @MyVector
 #check MyVector Int
@@ -434,10 +425,12 @@ def makeVector {α : Type} (x : α) (n : Nat) : MyVector α n :=
 #check makeVector true 2
 #eval makeVector true 2
 
-def appendVector {α : Type} {n m : Nat} (xs : MyVector α n) (ys : MyVector α m) : MyVector α (m + n) :=
+/-- Appends a vector to another vector -/
+def appendVector {α : Type} {n m : Nat} (xs : MyVector α n)
+    (ys : MyVector α m) : MyVector α (m + n) :=
   match xs with
   | .nil => ys
-  | .cons h t => .cons h (appendVector t ys)
+  | .cons head tail => .cons head (appendVector tail ys)
 
 #check appendVector (makeVector 1 2) (makeVector 2 3)
 
@@ -462,35 +455,35 @@ inductive Class where
 
 /-- Merges two classes -/
 def mergeClasses (c₁ c₂ : Class) : Class :=
-  let ⟨ n₁, students₁ ⟩ := c₁
-  let ⟨ n₂, students₂ ⟩ := c₂
-  ⟨ n₂ + n₁, appendVector students₁ students₂ ⟩
+  let ⟨n₁, students₁⟩ := c₁
+  let ⟨n₂, students₂⟩ := c₂
+  ⟨n₂ + n₁, appendVector students₁ students₂⟩
 
 #check mergeClasses
-  ⟨ 1, (.cons "Alice" .nil) ⟩
-  ⟨ 2, (.cons "Bob" (.cons "Charlie" .nil)) ⟩
+  ⟨1, (.cons "Alice" .nil)⟩
+  ⟨2, (.cons "Bob" (.cons "Charlie" .nil))⟩
 
 /-! Propositions -/
--- A proposition is a statement that is true or false
+-- A proposition is a declarative statement for which it makes sense to ask whether it holds
 
 /-
-* Monday is weekend: False
-* Tuesday is weekend: False
-* Wednesday is weekend: False
-* Thursday is weekend: False
-* Friday is weekend: False
-* Saturday is weekend: True
-* Sunday is weekend: True
+ * Monday is a weekend day: False
+ * Tuesday is a weekend day: False
+ * Wednesday is a weekend day: False
+ * Thursday is a weekend day: False
+ * Friday is a weekend day: False
+ * Saturday is a weekend day: True
+ * Sunday is a weekend day: True
 -/
 
 /-
 We introduce two inference rules:
 
 ---------------------
- Saturday is weekend
+ Saturday is a weekend day
 
 -------------------
- Sunday is weekend
+ Sunday is a weekend day
 -/
 
 /-
@@ -500,15 +493,15 @@ Curry-Howard correspondence:
 * Checking a proof is type checking
 -/
 
-/-- Whether a day is weekend -/
-inductive Weekend : Day -> Prop where
-  /-- Saturday is weekend -/
+/-- Whether a day is a weekend day -/
+inductive Weekend : Day → Prop where
+  /-- Saturday is a weekend day -/
   | saturday : Weekend .saturday
-  /-- Sunday is weekend -/
+  /-- Sunday is a weekend day -/
   | sunday : Weekend .sunday
 
-theorem saturday_is_weekend : Weekend .saturday := .saturday
-theorem sunday_is_weekend : Weekend .sunday := .sunday
+theorem weekend_saturday : Weekend .saturday := .saturday
+theorem weekend_sunday : Weekend .sunday := .sunday
 
 /-
 Alice goes to a party on Wednesday
@@ -520,7 +513,7 @@ We introduce three inference rules:
 ------------------------------------
  Alice goes to a party on Wednesday
 
-      [d] is weekend
+    [d] is a weekend day
 ----------------------------
  Bob goes to a party on [d]
 
@@ -529,37 +522,36 @@ We introduce three inference rules:
   Bob goes to a party on [d]
 -/
 
-/-- A person (Alice, Bob, or Charlie) -/
+/-- A person (Alice or Bob) -/
 inductive Person where
   | alice
   | bob
-  | charlie
 
 /-- Whether a certain person goes to a party on a certain day -/
-inductive Party : Person -> Day -> Prop where
+inductive Party : Person → Day → Prop where
   | alice : Party .alice .wednesday
-  | bobLikesWeekend {d : Day} (h : Weekend d) : Party .bob d
-  | bobLikesAlice {d : Day} (h : Party .alice d) : Party .bob d
+  | bob_of_weekend {d : Day} (h : Weekend d) : Party .bob d
+  | bob_of_alice {d : Day} (h : Party .alice d) : Party .bob d
 
 -- Not giving any name to a proof parameter usually looks more natural
 /-- Whether a certain person goes to a party on a certain day -/
-inductive Party' : Person -> Day -> Prop where
+inductive Party' : Person → Day → Prop where
   | alice : Party' .alice .wednesday
-  | bobLikesWeekend {d : Day} : Weekend d -> Party' .bob d
-  | bobLikesAlice {d : Day} : Party .alice d -> Party' .bob d
+  | bob_of_weekend {d : Day} : Weekend d → Party' .bob d
+  | bob_of_alice {d : Day} : Party' .alice d → Party' .bob d
 
-theorem alice_goes_to_a_party_on_wednesday : Party .alice .wednesday := .alice
-theorem bob_goes_to_a_party_on_saturday : Party .bob .saturday := .bobLikesWeekend .saturday
-theorem bob_goes_to_a_party_on_sunday : Party .bob .sunday := .bobLikesWeekend .sunday
-theorem bob_goes_to_a_party_on_wednesday : Party .bob .wednesday := .bobLikesAlice .alice
+theorem party_alice_wednesday : Party .alice .wednesday := .alice
+theorem party_bob_saturday : Party .bob .saturday := .bob_of_weekend .saturday
+theorem party_bob_sunday : Party .bob .sunday := .bob_of_weekend .sunday
+theorem party_bob_wednesday : Party .bob .wednesday := .bob_of_alice .alice
 
 -- Logical implication is a function
 theorem modus_ponens (a b : Prop) (ha : a) (hab : a → b) : b := hab ha
-theorem modus_ponens' : (a b : Prop) → a → (a → b) → b := fun _ _ ha hab ↦ hab ha
+theorem modus_ponens' {a b : Prop} (ha : a) (hab : a → b) : b := hab ha
 
 -- Universal quantification is a dependent function
-theorem modus_ponens'' : forall (a b : Prop), a → (a → b) → b := fun _ _ ha hab ↦ hab ha
-theorem modus_ponens''' : forall {a b : Prop}, a → (a → b) → b := fun ha hab ↦ hab ha
+theorem modus_ponens'' : (a b : Prop) → a → (a → b) → b := fun _ _ ha hab ↦ hab ha
+theorem modus_ponens''' : ∀ (a b : Prop), a → (a → b) → b := fun _ _ ha hab ↦ hab ha
 
 -- Logical conjunction is defined as an inductive proposition (actually structure)
 /-
@@ -569,9 +561,15 @@ inductive And (a b : Prop) : Prop where
 
 #check @And
 
-theorem a_b_then_a_and_b : ∀ {a b : Prop}, a → b → a ∧ b := fun ha hb ↦ ⟨ ha, hb ⟩
-theorem a_and_b_then_a : ∀ {a b : Prop}, a ∧ b → a := fun ⟨ ha, _ ⟩ ↦ ha
-theorem a_and_b_then_b : ∀ {a b : Prop}, a ∧ b → b := fun ⟨ _, hb ⟩ ↦ hb
+theorem and_of_a_of_b {a b : Prop} (ha : a) (hb : b) : a ∧ b := ⟨ha, hb⟩
+
+theorem a_of_a_and_b {a b : Prop} (hab : a ∧ b) : a :=
+  let ⟨ha, _⟩ := hab
+  ha
+
+theorem b_of_a_and_b {a b : Prop} (hab : a ∧ b) : b :=
+  let ⟨_, hb⟩ := hab
+  hb
 
 -- Logical disjunction is defined as an inductive proposition
 /-
@@ -582,8 +580,8 @@ inductive Or (a b : Prop) : Prop where
 
 #check @Or
 
-theorem a_then_a_or_b : ∀ {a b : Prop}, a → a ∨ b := .inl
-theorem b_then_a_or_b : ∀ {a b : Prop}, b → a ∨ b := .inr
+theorem a_or_b_of_a {a b : Prop} (ha : a) : a ∨ b := .inl ha
+theorem a_or_b_of_b {a b : Prop} (hb : b) : a ∨ b := .inr hb
 
 -- Existential quantification is a dependent pair
 /-
@@ -592,11 +590,11 @@ inductive Exists {α : Sort u} (p : α → Prop) : Prop where
 -/
 #check @Exists
 
-theorem alice_goes_to_a_party : Exists (fun d ↦ Party .alice d) :=
-  ⟨ .wednesday, .alice ⟩
+theorem exists_party_alice : Exists (fun d ↦ Party .alice d) :=
+  ⟨.wednesday, .alice⟩
 
-theorem alice_goes_to_a_party' : ∃ (d : Day), Party .alice d :=
-  ⟨ .wednesday, .alice ⟩
+theorem exists_party_alice' : ∃ d : Day, Party .alice d :=
+  ⟨.wednesday, .alice⟩
 
 -- Tautology is defined as an inductive proposition
 /-
@@ -616,8 +614,8 @@ inductive False : Prop
 #check False
 
 -- ¬ P is defined as P → False
-theorem monday_is_not_weekend : Weekend .monday → False := fun h ↦ nomatch h
-theorem monday_is_not_weekend' : ¬ Weekend .monday := nofun
+theorem not_weekend_monday : Weekend .monday → False := fun h ↦ nomatch h
+theorem not_weekend_monday' : ¬ Weekend .monday := nofun
 theorem false_does_not_hold : ¬ False := nofun
 
 -- Equality is defined as an inductive proposition
@@ -628,119 +626,109 @@ inductive Eq : α → α → Prop where
 
 #check @Eq
 
-theorem one_is_one : Eq 1 1 := .refl 1
-theorem one_is_one' : 1 = 1 := rfl
+theorem one_eq_one : Eq 1 1 := .refl 1
+theorem one_eq_one' : 1 = 1 := rfl
 
 #check @rfl
 
-theorem one_is_one_plus_zero : 1 = 1 + 0 := .refl 1
-theorem one_is_one_plus_zero' : 1 = 1 + 0 := .refl (1 + 0)
+theorem one_eq_one_add_zero : 1 = 1 + 0 := .refl 1
+theorem one_eq_one_add_zero' : 1 = 1 + 0 := .refl (1 + 0)
 
-theorem zero_is_not_one : ¬ 0 = 1 := nofun
-theorem zero_is_not_one' : 0 ≠ 1 := nofun
+theorem zero_ne_one : ¬ 0 = 1 := nofun
+theorem zero_ne_one' : 0 ≠ 1 := nofun
 
-theorem n_is_n_plus_zero : ∀ {n : Nat}, n = n + 0 := rfl
+theorem self_eq_add_zero {n : Nat} : n = n + 0 := rfl
 
 /-
-def Nat.add : (@& Nat) → (@& Nat) → Nat
+def Nat.add : Nat → Nat → Nat
   | a, Nat.zero   => a
   | a, Nat.succ b => Nat.succ (Nat.add a b)
 -/
 
--- theorem n_is_zero_plus_n : ∀ {n : Nat}, n = 0 + n := rfl
+-- theorem self_eq_zero_add {n : Nat} : n = 0 + n := rfl
 
-theorem day_on_which_alice_goes_to_a_party_is_wednesday :
-    ∀ {d : Day}, Party .alice d -> d = .wednesday :=
-  fun h ↦
-    match h with
-    | .alice => rfl
+theorem eq_wednesday_of_party_alice {d : Day} (h : Party .alice d) : d = .wednesday :=
+  match h with
+  | .alice => rfl
 
-/-- Tactics -/
+/-! Tactics -/
 
-theorem saturday_is_weekend' : Weekend .saturday := by
-  apply Weekend.saturday
+theorem weekend_saturday' : Weekend .saturday := by
+  exact Weekend.saturday
 
-#print saturday_is_weekend'
+#print weekend_saturday'
 
-theorem sunday_is_weekend' : Weekend .sunday := by
-  apply Weekend.sunday
+theorem weekend_sunday' : Weekend .sunday := by
+  exact Weekend.sunday
 
-theorem alice_goes_to_a_party_on_wednesday' : Party .alice .wednesday := by
-  apply Party.alice
+theorem party_alice_wednesday' : Party .alice .wednesday := by
+  exact Party.alice
 
-theorem bob_goes_to_a_party_on_saturday' : Party .bob .saturday := by
-  apply Party.bobLikesWeekend
-  apply Weekend.saturday
+theorem party_bob_saturday' : Party .bob .saturday := by
+  apply Party.bob_of_weekend
+  exact Weekend.saturday
 
-#print bob_goes_to_a_party_on_saturday'
+#print party_bob_saturday'
 
-theorem bob_goes_to_a_party_on_sunday' : Party .bob .sunday := by
-  apply Party.bobLikesWeekend
-  apply Weekend.sunday
+theorem party_bob_sunday' : Party .bob .sunday := by
+  apply Party.bob_of_weekend
+  exact Weekend.sunday
 
-theorem bob_goes_to_a_party_on_wednesday' : Party .bob .wednesday := by
-  apply Party.bobLikesAlice
-  apply Party.alice
+theorem party_bob_wednesday' : Party .bob .wednesday := by
+  apply Party.bob_of_alice
+  exact Party.alice
 
-theorem modus_ponens'''' : forall {a b : Prop}, a → (a → b) → b := by
-  intros a b ha hab
+theorem modus_ponens'''' {a b : Prop} (ha : a) (hab : a → b) : b := by
   apply hab
-  apply ha
+  exact ha
 
 #print modus_ponens''''
 
-theorem a_b_then_a_and_b' : ∀ {a b : Prop}, a → b → a ∧ b := by
-  intros a b ha hb
+theorem and_of_a_of_b' {a b : Prop} (ha : a) (hb : b) : a ∧ b := by
   apply And.intro
-  { apply ha }
-  { apply hb }
+  · exact ha
+  · exact hb
 
-#print a_b_then_a_and_b'
+#print and_of_a_of_b'
 
-theorem a_and_b_then_a' : ∀ {a b : Prop}, a ∧ b → a := by
-  intros a b hab
+theorem a_of_a_and_b' {a b : Prop} (hab : a ∧ b) : a := by
   cases hab with
-  | intro ha _ => apply ha
+  | intro ha _ => exact ha
 
-#print a_and_b_then_a'
+#print a_of_a_and_b'
 
-theorem a_then_a_or_b' : ∀ {a b : Prop}, a → a ∨ b := by
-  intros a b ha
+theorem a_or_b_of_a' {a b : Prop} (ha : a) : a ∨ b := by
   apply Or.inl
-  apply ha
+  exact ha
 
-theorem b_then_a_or_b' : ∀ {a b : Prop}, b → a ∨ b := by
-  intros a b hb
+theorem a_or_b_of_b' {a b : Prop} (hb : b) : a ∨ b := by
   apply Or.inr
-  apply hb
+  exact hb
 
-theorem alice_goes_to_a_party'' : ∃ (d : Day), Party .alice d := by
+theorem exists_party_alice'' : ∃ d : Day, Party .alice d := by
   exists .wednesday
-  apply Party.alice
+  exact Party.alice
 
-theorem monday_is_not_weekend'' : ¬ Weekend .monday := by
+theorem not_weekend_monday'' : ¬ Weekend .monday := by
   intro h
   cases h
 
-theorem n_is_n_plus_zero' : ∀ {n : Nat}, n = n + 0 := by
-  intro n
+theorem self_eq_add_zero' {n : Nat} : n = n + 0 := by
   rfl
 
-theorem zero_plus_succ_n_is_succ_zero_plus_n :
-    ∀ {n : Nat}, 0 + Nat.succ n = Nat.succ (0 + n) := by
-  intro n
+theorem zero_add_succ_eq_succ_zero_add {n : Nat} :
+    0 + Nat.succ n = Nat.succ (0 + n) := by
   rfl
 
-theorem n_is_zero_plus_n : ∀ {n : Nat}, n = 0 + n := by
-  intro n
+theorem self_eq_zero_add {n : Nat} : n = 0 + n := by
   induction n with
   | zero => rfl
   | succ n' ih =>
-    rewrite [zero_plus_succ_n_is_succ_zero_plus_n]
-    rewrite [<- ih]
+    rewrite [zero_add_succ_eq_succ_zero_add]
+    rewrite [← ih]
     rfl
 
-#print n_is_zero_plus_n
+#print self_eq_zero_add
 #check @Nat.rec
 /-
 Nat.rec :
@@ -755,7 +743,7 @@ Nat.rec :
 NatList.rec :
   (p : NatList → Prop) →
   (p .nil) →
-  (∀ (h : Nat) (t : NatList), p t → p (.cons h t)) →
+  (∀ (head : Nat) (tail : NatList), p tail → p (.cons head tail)) →
   (∀ (ns : NatList), p ns)
 -/
 
@@ -769,18 +757,19 @@ def List.append : (xs ys : List α) → List α
   | cons a as, bs => cons a (List.append as bs)
 -/
 
-theorem length_of_appended_list_is_sum_of_lengths {α : Type} :
-  ∀ (xs ys : List α), List.length (List.append xs ys) = List.length xs + List.length ys := by
-  intros xs ys
+theorem length_append {α : Type} (xs ys : List α) :
+    List.length (List.append xs ys) = List.length xs + List.length ys := by
   induction xs with
   | nil => simp
-  | cons h t ih => simp; omega
+  | cons _ tail ih =>
+    simp
+    omega
 
-/- ((h :: t).append ys).length
- = (h :: (t.append ys)).length  (by the definition of append)
- = (t.append ys).length + 1  (by the definition of length)
- = (t.length + ys.length) + 1  (by the induction hypothesis)
+/- ((head :: tail).append ys).length
+ = (head :: (tail.append ys)).length  (by the definition of append)
+ = (tail.append ys).length + 1  (by the definition of length)
+ = (tail.length + ys.length) + 1  (by the induction hypothesis)
 -/
-/- (h :: t).length + ys.length
- = (t.length + 1) + ys.length  (by the definition of length)
+/- (head :: tail).length + ys.length
+ = (tail.length + 1) + ys.length  (by the definition of length)
 -/
