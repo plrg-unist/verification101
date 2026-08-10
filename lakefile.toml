@@ -1,9 +1,9 @@
 name = "verification101"
 version = "0.1.0"
-defaultTargets = ["Lib", "Imp", "max"]
+defaultTargets = ["Basics", "Imp", "max"]
 
 [[lean_lib]]
-name = "Lib"
+name = "Basics"
 
 [[lean_lib]]
 name = "Imp"
