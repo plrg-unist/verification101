@@ -1,6 +1,6 @@
-name = "verification101"
+name = "lean-intro"
 version = "0.1.0"
-defaultTargets = ["Basics", "Imp", "max"]
+defaultTargets = ["Basics", "Imp", "max", "add"]
 
 [[lean_lib]]
 name = "Basics"
@@ -11,3 +11,7 @@ name = "Imp"
 [[lean_exe]]
 name = "max"
 root = "Max"
+
+[[lean_exe]]
+name = "add"
+root = "Add"
