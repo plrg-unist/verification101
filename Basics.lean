@@ -80,10 +80,11 @@ def twice (f : Nat → Nat) (n : Nat) : Nat := f (f n)
 #eval (fun n ↦ n + n) (1 + 2)
 
 /-! Local Definitions -/
+-- Local definitions are introduced using `let`
 
 /-- Triples a natural number -/
 def triple (n : Nat) : Nat :=
-  let m := n + n
+  let m : Nat := n + n
   n + m
 
 #eval triple 2
@@ -153,7 +154,7 @@ def nextDay' (d : Day) : Day :=
   | .saturday => .sunday
   | .sunday => .monday
 
-#eval nextDay' Day.monday
+#eval nextDay' .monday
 
 /-- A shape that is either a rectangle or a circle -/
 inductive Shape where
@@ -350,6 +351,13 @@ def append' {α : Type} (xs ys : List α) : List α :=
 /-! Generalized Algebraic Data Types (GADTs) -/
 -- Polymorphic types may have variants that can only be instantiated with specific types
 
+/-- A list of elements of type α -/
+inductive MyList' : Type → Type where
+  /-- The empty list -/
+  | nil {α : Type} : MyList' α
+  /-- A pair of an element and a list -/
+  | cons {α : Type} (head : α) (tail : MyList' α) : MyList' α
+
 /-- An expression of Expr α evaluates to a value of α -/
 inductive Expr : Type → Type where
   | num (n : Nat) : Expr Nat
@@ -418,12 +426,19 @@ def makeVector {α : Type} (x : α) (n : Nat) : MyVector α n :=
   | n' + 1 => .cons x (makeVector x n')
 
 #check @makeVector
+#check makeVector 2
 
 #check makeVector 2 3
 #eval makeVector 2 3
 
 #check makeVector true 2
 #eval makeVector true 2
+
+/-- Makes a vector with n copies of x -/
+def makeVector' {α : Type} : α → (n : Nat) → MyVector α n := fun x n ↦
+  match n with
+  | 0 => .nil
+  | n' + 1 => .cons x (makeVector x n')
 
 /-- Appends a vector to another vector -/
 def appendVector {α : Type} {n m : Nat} (xs : MyVector α n)
@@ -477,12 +492,28 @@ def mergeClasses (c₁ c₂ : Class) : Class :=
 -/
 
 /-
+An inference rule describes how a proposition can be proven
+
+ premise₁ premise₂ ...
+-----------------------
+      conclusion
+
+means "if all premises can be proven, then the conclusion can be proven"
+
+Example: modus ponens
+
+ A → B     A
+-------------
+      B
+-/
+
+/-
 We introduce two inference rules:
 
----------------------
+---------------------------
  Saturday is a weekend day
 
--------------------
+-------------------------
  Sunday is a weekend day
 -/
 
@@ -533,7 +564,6 @@ inductive Party : Person → Day → Prop where
   | bob_of_weekend {d : Day} (h : Weekend d) : Party .bob d
   | bob_of_alice {d : Day} (h : Party .alice d) : Party .bob d
 
--- Not giving any name to a proof parameter usually looks more natural
 /-- Whether a certain person goes to a party on a certain day -/
 inductive Party' : Person → Day → Prop where
   | alice : Party' .alice .wednesday
@@ -559,9 +589,8 @@ inductive And (a b : Prop) : Prop where
   | intro (left : a) (right : b)
 -/
 
-#check @And
-
-theorem and_of_a_of_b {a b : Prop} (ha : a) (hb : b) : a ∧ b := ⟨ha, hb⟩
+theorem and_of_a_of_b {a b : Prop} (ha : a) (hb : b) : And a b := ⟨ha, hb⟩
+theorem and_of_a_of_b' {a b : Prop} (ha : a) (hb : b) : a ∧ b := ⟨ha, hb⟩
 
 theorem a_of_a_and_b {a b : Prop} (hab : a ∧ b) : a :=
   let ⟨ha, _⟩ := hab
@@ -578,9 +607,8 @@ inductive Or (a b : Prop) : Prop where
   | inr (h : b) : Or a b
 -/
 
-#check @Or
-
-theorem a_or_b_of_a {a b : Prop} (ha : a) : a ∨ b := .inl ha
+theorem a_or_b_of_a {a b : Prop} (ha : a) : Or a b := .inl ha
+theorem a_or_b_of_a' {a b : Prop} (ha : a) : a ∨ b := .inl ha
 theorem a_or_b_of_b {a b : Prop} (hb : b) : a ∨ b := .inr hb
 
 -- Existential quantification is a dependent pair
@@ -588,7 +616,6 @@ theorem a_or_b_of_b {a b : Prop} (hb : b) : a ∨ b := .inr hb
 inductive Exists {α : Sort u} (p : α → Prop) : Prop where
   | intro (w : α) (h : p w) : Exists p
 -/
-#check @Exists
 
 theorem exists_party_alice : Exists (fun d ↦ Party .alice d) :=
   ⟨.wednesday, .alice⟩
@@ -602,16 +629,12 @@ inductive True : Prop where
   | intro : True
 -/
 
-#check True
-
 theorem true_holds : True := .intro
 
 -- Contradiction is defined as an inductive proposition
 /-
 inductive False : Prop
 -/
-
-#check False
 
 -- ¬ P is defined as P → False
 theorem not_weekend_monday : Weekend .monday → False := fun h ↦ nomatch h
@@ -624,12 +647,8 @@ inductive Eq : α → α → Prop where
   | refl (a : α) : Eq a a
 -/
 
-#check @Eq
-
 theorem one_eq_one : Eq 1 1 := .refl 1
 theorem one_eq_one' : 1 = 1 := rfl
-
-#check @rfl
 
 theorem one_eq_one_add_zero : 1 = 1 + 0 := .refl 1
 theorem one_eq_one_add_zero' : 1 = 1 + 0 := .refl (1 + 0)
@@ -684,7 +703,7 @@ theorem modus_ponens'''' {a b : Prop} (ha : a) (hab : a → b) : b := by
 
 #print modus_ponens''''
 
-theorem and_of_a_of_b' {a b : Prop} (ha : a) (hb : b) : a ∧ b := by
+theorem and_of_a_of_b'' {a b : Prop} (ha : a) (hb : b) : a ∧ b := by
   apply And.intro
   · exact ha
   · exact hb
@@ -697,24 +716,34 @@ theorem a_of_a_and_b' {a b : Prop} (hab : a ∧ b) : a := by
 
 #print a_of_a_and_b'
 
-theorem a_or_b_of_a' {a b : Prop} (ha : a) : a ∨ b := by
+theorem a_or_b_of_a'' {a b : Prop} (ha : a) : a ∨ b := by
   apply Or.inl
   exact ha
+
+#print a_or_b_of_a''
 
 theorem a_or_b_of_b' {a b : Prop} (hb : b) : a ∨ b := by
   apply Or.inr
   exact hb
 
+#print a_or_b_of_b'
+
 theorem exists_party_alice'' : ∃ d : Day, Party .alice d := by
   exists .wednesday
   exact Party.alice
+
+#print exists_party_alice''
 
 theorem not_weekend_monday'' : ¬ Weekend .monday := by
   intro h
   cases h
 
+#print not_weekend_monday''
+
 theorem self_eq_add_zero' {n : Nat} : n = n + 0 := by
   rfl
+
+#print self_eq_add_zero'
 
 theorem zero_add_succ_eq_succ_zero_add {n : Nat} :
     0 + Nat.succ n = Nat.succ (0 + n) := by
@@ -729,7 +758,7 @@ theorem self_eq_zero_add {n : Nat} : n = 0 + n := by
     rfl
 
 #print self_eq_zero_add
-#check @Nat.rec
+
 /-
 Nat.rec :
   (p : Nat → Prop) →
@@ -738,7 +767,6 @@ Nat.rec :
   (∀ (n : Nat), p n)
 -/
 
-#check @NatList.rec
 /-
 NatList.rec :
   (p : NatList → Prop) →
